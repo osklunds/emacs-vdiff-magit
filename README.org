@@ -6,6 +6,12 @@
   - [[#installation-and-usage][Installation and Usage]]
   - [[#magit-integration-details][Magit integration details]]
 
+** Fork info
+
+I, Oskar Lundström, have done some changs in this fork. I have done my best to
+follow the GPL v3 license. If you see any issues, please let me know, and I will
+be happy to fix them.
+
 ** Introduction
 
    The purpose of this Emacs package is to integrate [[https://github.com/justbur/emacs-vdiff][vdiff]] into [[https://github.com/magit/magit][magit]], replacing
