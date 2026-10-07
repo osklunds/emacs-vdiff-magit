@@ -12,6 +12,8 @@ I, Oskar Lundström, have done some changs in this fork. I have done my best to
 follow the GPL v3 license. If you see any issues, please let me know, and I will
 be happy to fix them.
 
+I will/have done som bug fixes and other improvements.
+
 ** Introduction
 
    The purpose of this Emacs package is to integrate [[https://github.com/justbur/emacs-vdiff][vdiff]] into [[https://github.com/magit/magit][magit]], replacing
