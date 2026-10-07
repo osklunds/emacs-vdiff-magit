@@ -323,11 +323,13 @@ FILE must be relative to the top directory of the repository."
    (list (magit-read-file-choice "Show staged changes for file"
                                  (magit-staged-files)
                                  "No staged files")))
-  (vdiff-buffers
-   (magit-find-file-noselect "HEAD" file t 'ediff)
-   (or (get-buffer (concat file ".~{index}~"))
-       (magit-find-file-index-noselect file))
-   nil nil t t))
+  ;; To handle renamed files, get new file name in HEAD
+  (let* ((file-head (magit--rev-file-name file "HEAD" nil)))
+    (vdiff-buffers
+     (magit-find-file-noselect "HEAD" file-head t 'ediff)
+     (or (get-buffer (concat file ".~{index}~"))
+         (magit-find-file-index-noselect file))
+     nil nil t t)))
 
 ;;;###autoload
 (defun vdiff-magit-show-unstaged (file)
