@@ -217,7 +217,7 @@ range)."
   (interactive (pcase-let ((`(,rev-a ,rev-b) (magit-ediff-compare--read-revisions
                                               nil current-prefix-arg)))
                  (nconc (list rev-a rev-b)
-                        (magit-ediff-read-files rev-a rev-b))))
+                        (vdiff-magit-read-files rev-a rev-b))))
   (magit-with-toplevel
     (vdiff-buffers
      (if rev-a
@@ -229,6 +229,16 @@ range)."
        (or (get-file-buffer file-b)
            (find-file-noselect file-b)))
      nil 'vdiff-magit--kill-temp-buffers t nil)))
+
+
+(defun vdiff-magit-read-files (revA revB &optional fileB)
+  "vdiff the highlighted file directly without prompt."
+  (let* ((fileA (magit--rev-file-name fileB revA revB))
+         (fileA (or fileA fileB))) ;; if fileB didn't exist in revA, i.e was added since revA
+    (list fileA fileB)))
+
+;; todo: do the above also for index and HEAD. If a file is renamed, diff
+;; doesn't work. Same for ediff
 
 ;;;###autoload
 (defun vdiff-magit-dwim ()
@@ -291,7 +301,7 @@ mind at all, then it asks the user for a command to run."
                  (?v "resol[v]e" 'vdiff-magit-resolve))))
              ((eq command 'vdiff-magit-compare)
               (apply 'vdiff-magit-compare rev-a rev-b
-                     (magit-ediff-read-files rev-a rev-b file)))
+                     (vdiff-magit-read-files rev-a rev-b file)))
              ((eq command 'vdiff-magit-show-commit)
               (vdiff-magit-show-commit rev-b))
              ((eq command 'vdiff-magit-show-stash)
@@ -361,7 +371,7 @@ FILE must be relative to the top directory of the repository."
         (rev-b commit))
     (apply #'vdiff-magit-compare
            (concat commit "^") commit
-           (magit-ediff-read-files rev-a rev-b (magit-current-file)))))
+           (vdiff-magit-read-files rev-a rev-b (magit-current-file)))))
 
 ;; ;;;###autoload
 (defun vdiff-magit-show-stash (stash)
@@ -373,7 +383,7 @@ stash that were staged."
   (pcase-let* ((`,rev-a (concat stash "^1"))
                (`,rev-b (concat stash "^2"))
                (`,rev-c stash)
-               (`(,file-a ,file-c) (magit-ediff-read-files rev-a rev-c))
+               (`(,file-a ,file-c) (vdiff-magit-read-files rev-a rev-c))
                (`,file-b file-c))
     (if (and vdiff-magit-show-stash-with-index
              (member file-a (magit-changed-files rev-b rev-a)))
