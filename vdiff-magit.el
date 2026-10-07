@@ -1,6 +1,9 @@
 ;;; vdiff-magit.el --- magit integration for vdiff -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  Justin Burkett
+;; Copyright (C) 2026  Oskar Lundström
+
+;; Modified by Oskar Lundström (2026)
 
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
