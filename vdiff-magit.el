@@ -211,8 +211,8 @@ line of the region.  With a prefix argument, instead of diffing
 the revisions, choose a revision to view changes along, starting
 at the common ancestor of both revisions (i.e., use a \"...\"
 range)."
-  (interactive (-let [(rev-a rev-b) (magit-ediff-compare--read-revisions
-                                   nil current-prefix-arg)]
+  (interactive (pcase-let ((`(,rev-a ,rev-b) (magit-ediff-compare--read-revisions
+                                              nil current-prefix-arg)))
                  (nconc (list rev-a rev-b)
                         (magit-ediff-read-files rev-a rev-b))))
   (magit-with-toplevel
@@ -262,15 +262,15 @@ mind at all, then it asks the user for a command to run."
           (setq command #'vdiff-magit-show-stash
                 rev-b value))
          ((pred stringp)
-          (-let [(a b) (magit-ediff-compare--read-revisions range)]
+          (pcase-let ((`(,a ,b) (magit-ediff-compare--read-revisions range)))
             (setq command #'vdiff-magit-compare
                   rev-a a
                   rev-b b)))
          (_
           (when (derived-mode-p 'magit-diff-mode)
             (pcase (magit-diff-type)
-              (`committed (-let [(a b) (magit-ediff-compare--read-revisions
-                                        (car magit-refresh-args))]
+              (`committed (pcase-let (`((,a ,b) (magit-ediff-compare--read-revisions
+                                               (car magit-refresh-args))))
                             (setq rev-a a rev-b b)))
               ((guard (not vdiff-magit-dwim-show-on-hunks))
                (setq command #'vdiff-magit-stage))
@@ -367,11 +367,11 @@ FILE must be relative to the top directory of the repository."
 three-buffer vdiff is used in order to distinguish changes in the
 stash that were staged."
   (interactive (list (magit-read-stash "Stash")))
-  (-let* ((rev-a (concat stash "^1"))
-          (rev-b (concat stash "^2"))
-          (rev-c stash)
-          ((file-a file-c) (magit-ediff-read-files rev-a rev-c))
-          (file-b file-c))
+  (pcase-let* ((`,rev-a (concat stash "^1"))
+               (`,rev-b (concat stash "^2"))
+               (`,rev-c stash)
+               (`(,file-a ,file-c) (magit-ediff-read-files rev-a rev-c))
+               (`,file-b file-c))
     (if (and vdiff-magit-show-stash-with-index
              (member file-a (magit-changed-files rev-b rev-a)))
         (vdiff-buffers3
